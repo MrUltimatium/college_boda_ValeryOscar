@@ -13,6 +13,7 @@ const submitButton = document.getElementById("submit-button");
 const refreshButton = document.getElementById("refresh-button");
 const gallery = document.getElementById("gallery");
 const galleryMeta = document.getElementById("gallery-meta");
+const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".heic", ".heif"];
 
 const formatPhotoCount = (count) => {
   if (count === 1) return "Un recuerdo compartido";
@@ -60,6 +61,13 @@ const renderGallery = (photos) => {
     image.src = photo.url;
     image.alt = "Foto compartida por invitados en la boda";
     image.loading = "lazy";
+    image.addEventListener("error", () => {
+      card.remove();
+
+      if (!gallery.querySelector(".photo-card")) {
+        renderGallery([]);
+      }
+    });
 
     card.appendChild(image);
     fragment.appendChild(card);
@@ -99,7 +107,13 @@ const loadGallery = async () => {
   }
 
   const photos = (data || [])
-    .filter((item) => item.name)
+    .filter((item) => {
+      const name = item.name || "";
+      const lowerName = name.toLowerCase();
+      const isImage = IMAGE_EXTENSIONS.some((extension) => lowerName.endsWith(extension));
+
+      return item.id && item.metadata && isImage;
+    })
     .map((item) => {
       const path = `${FOLDER}/${item.name}`;
       const response = supabaseClient.storage.from(BUCKET).getPublicUrl(path);
