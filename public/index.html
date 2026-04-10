@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mural de Recuerdos | Valery & Oscar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <section class="hero">
+      <div class="hero__veil"></div>
+      <p class="hero__monogram">V & O</p>
+      <p class="hero__eyebrow">Valery y Oscar</p>
+      <h1>Mural de recuerdos</h1>
+      <p class="hero__date">20 Junio 2026</p>
+      <p class="hero__lead">
+        Sube tus fotos de la boda y ayúdanos a construir un collage vivo con todos
+        los momentos especiales de ese día.
+      </p>
+      <a class="hero__cta" href="#subir-fotos">Compartir fotos</a>
+    </section>
+
+    <section class="card intro-grid">
+      <article>
+        <div class="section-heading">
+          <span class="section-heading__line"></span>
+          <h2>Cómo funciona</h2>
+          <span class="section-heading__line"></span>
+        </div>
+        <p>
+          Toma tus fotos favoritas durante la boda, entra a esta página y súbelas
+          para que formen parte del mural colaborativo.
+        </p>
+      </article>
+
+      <article class="highlight-box">
+        <p class="highlight-box__title">Sugerencia</p>
+        <p>
+          Comparte momentos espontáneos, abrazos, baile, brindis y selfies. Entre
+          más variadas sean las fotos, más bonito se verá el collage.
+        </p>
+      </article>
+    </section>
+
+    <section id="subir-fotos" class="card upload-card">
+      <div class="section-heading">
+        <span class="section-heading__line"></span>
+        <h2>Sube tus fotos</h2>
+        <span class="section-heading__line"></span>
+      </div>
+
+      <form id="upload-form" class="upload-form">
+        <label class="upload-dropzone" for="photo-input">
+          <input id="photo-input" name="photos" type="file" accept="image/*" multiple />
+          <span class="upload-dropzone__icon">+</span>
+          <span class="upload-dropzone__title">Selecciona una o varias fotos</span>
+          <span class="upload-dropzone__text">Formatos recomendados: JPG, PNG, WEBP. Máximo 12 imágenes por envío.</span>
+        </label>
+
+        <div id="preview-list" class="preview-list" aria-live="polite"></div>
+
+        <div class="upload-actions">
+          <button id="submit-button" class="button" type="submit">Subir al mural</button>
+          <p id="form-status" class="form-status">El collage se actualiza automáticamente cada pocos segundos.</p>
+        </div>
+      </form>
+    </section>
+
+    <section class="card gallery-card">
+      <div class="gallery-header">
+        <div class="section-heading section-heading--left">
+          <span class="section-heading__line"></span>
+          <h2>Collage de la boda</h2>
+          <span class="section-heading__line"></span>
+        </div>
+        <button id="refresh-button" class="button button--ghost" type="button">Actualizar mural</button>
+      </div>
+
+      <div id="gallery-meta" class="gallery-meta">Cargando recuerdos...</div>
+      <section id="gallery" class="gallery" aria-live="polite"></section>
+      <template id="photo-card-template">
+        <article class="photo-card">
+          <img alt="Foto del collage de la boda" loading="lazy" />
+        </article>
+      </template>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
