@@ -13,7 +13,6 @@ const submitButton = document.getElementById("submit-button");
 const refreshButton = document.getElementById("refresh-button");
 const gallery = document.getElementById("gallery");
 const galleryMeta = document.getElementById("gallery-meta");
-const photoCardTemplate = document.getElementById("photo-card-template");
 
 const formatPhotoCount = (count) => {
   if (count === 1) return "Un recuerdo compartido";
@@ -54,11 +53,16 @@ const renderGallery = (photos) => {
   const fragment = document.createDocumentFragment();
 
   photos.forEach((photo) => {
-     const card = photoCardTemplate.contentEditable.firstElementChild.cloneNode(true);
-     const image = card.querySelector("img");
-     image.src = photo.url;
-     image.alt = "Foto compartida por invitados de la boda";
-     fragment.appendChild(card);
+    const card = document.createElement("article");
+    card.className = "photo-card";
+
+    const image = document.createElement("img");
+    image.src = photo.url;
+    image.alt = "Foto compartida por invitados en la boda";
+    image.loading = "lazy";
+
+    card.appendChild(image);
+    fragment.appendChild(card);
   });
 
   gallery.appendChild(fragment);
