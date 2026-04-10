@@ -58,7 +58,6 @@ const renderGallery = (photos) => {
     card.className = "photo-card";
 
     const image = document.createElement("img");
-    image.src = photo.url;
     image.alt = "Foto compartida por invitados en la boda";
     image.loading = "lazy";
     image.addEventListener("error", () => {
@@ -68,6 +67,7 @@ const renderGallery = (photos) => {
         renderGallery([]);
       }
     });
+    image.src = photo.url;
 
     card.appendChild(image);
     fragment.appendChild(card);
@@ -85,6 +85,24 @@ const safeFileName = (fileName) => {
     .replace(/[^a-z0-9.\-_]/g, "-")
     .replace(/-+/g, "-");
 };
+
+const canLoadImage = (url) =>
+  new Promise((resolve) => {
+    const image = new Image();
+    const timeout = window.setTimeout(() => resolve(false), 6000);
+
+    image.onload = () => {
+      window.clearTimeout(timeout);
+      resolve(true);
+    };
+
+    image.onerror = () => {
+      window.clearTimeout(timeout);
+      resolve(false);
+    };
+
+    image.src = `${url}${url.includes("?") ? "&" : "?"}check=${Date.now()}`;
+  });
 
 const loadGallery = async () => {
   galleryMeta.textContent = "Actualizando mural...";
@@ -111,8 +129,9 @@ const loadGallery = async () => {
       const name = item.name || "";
       const lowerName = name.toLowerCase();
       const isImage = IMAGE_EXTENSIONS.some((extension) => lowerName.endsWith(extension));
+      const hasSize = Number(item.metadata?.size || 0) > 0;
 
-      return item.id && item.metadata && isImage;
+      return item.id && item.metadata && hasSize && isImage;
     })
     .map((item) => {
       const path = `${FOLDER}/${item.name}`;
@@ -125,7 +144,14 @@ const loadGallery = async () => {
       };
     });
 
-  renderGallery(photos);
+  const checkedPhotos = await Promise.all(
+    photos.map(async (photo) => ({
+      ...photo,
+      canLoad: await canLoadImage(photo.url)
+    }))
+  );
+
+  renderGallery(checkedPhotos.filter((photo) => photo.canLoad));
 };
 
 photoInput.addEventListener("change", renderPreviews);
