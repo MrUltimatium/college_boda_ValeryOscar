@@ -98,11 +98,11 @@ const loadGallery = async () => {
     .filter((item) => item.name)
     .map((item) => {
       const path = `${FOLDER}/${item.name}`;
-      const { data: pubicData } = supabaseClient.storage.from(BUCKET).getPublicUrl(path);
+      const response = supabaseClient.storage.from(BUCKET).getPublicUrl(path);
 
       return {
         id: item.id || item.name,
-        url: publicData.publicUrl,
+        url: response.data.publicUrl,
         name: item.name
       };
     });
